@@ -35,7 +35,7 @@ class HomeScreen extends StatelessWidget {
                   title: "단어",
                   description: "기초 발음을 위한 단어 연습",
                   level: 1,
-                  count: 30,
+                  count: 30, // TODO 추후 해당 데이터의 length 로 변경
                 ),
                 SizedBox(height: 24),
                 LevelCard(

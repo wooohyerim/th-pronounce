@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:th_pronounce_app/screens/practice_screen.dart';
 
 class LevelCard extends StatelessWidget {
   final String title, description;
@@ -16,7 +17,10 @@ class LevelCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO 추후 클릭한 레벨에 맞는 페이지로 이동
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PracticeScreen(level: level)),
+        );
       },
       child: Container(
         width: double.infinity,
@@ -40,7 +44,6 @@ class LevelCard extends StatelessWidget {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    // TODO 추후 해당 데이터의 length 로 변경
                     "$count개",
                     style: TextStyle(
                       fontSize: 16,
