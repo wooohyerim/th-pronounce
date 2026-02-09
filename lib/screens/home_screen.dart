@@ -29,13 +29,22 @@ class HomeScreen extends StatelessWidget {
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 30),
+                SizedBox(height: 20),
+                Text(
+                  "PRACTICE LEVELS",
+                  style: TextStyle(
+                    color: Color(0xFF999999),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 18),
                 LevelCard(
                   title: "단어",
                   description: "기초 발음을 위한 단어 연습",
                   level: 1,
-                  count: 30, // TODO 추후 해당 데이터의 length 로 변경
+                  count: 30,
                 ),
                 SizedBox(height: 24),
                 LevelCard(
