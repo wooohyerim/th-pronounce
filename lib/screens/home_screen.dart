@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:th_pronounce_app/data/all_data.dart';
 import 'package:th_pronounce_app/widget/level_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -7,6 +8,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final wordLength = AllWordData.getDataByLevel(1).length;
+    final shortLength = AllWordData.getDataByLevel(2).length;
+    final longLength = AllWordData.getDataByLevel(3).length;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -44,21 +49,21 @@ class HomeScreen extends StatelessWidget {
                   title: "단어",
                   description: "기초 발음을 위한 단어 연습",
                   level: 1,
-                  count: 30,
+                  count: wordLength,
                 ),
                 SizedBox(height: 24),
                 LevelCard(
                   title: "짧은 문장",
                   description: "일상 표현으로 발음 다듬기",
                   level: 2,
-                  count: 25,
+                  count: shortLength,
                 ),
                 SizedBox(height: 24),
                 LevelCard(
                   title: "긴 문장",
                   description: "복잡한 문장으로 실력 완성",
                   level: 3,
-                  count: 20,
+                  count: longLength,
                 ),
               ],
             ),

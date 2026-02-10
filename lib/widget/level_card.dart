@@ -19,9 +19,7 @@ class LevelCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => PracticeScreen(level: level, count: count),
-          ),
+          MaterialPageRoute(builder: (context) => PracticeScreen(level: level)),
         );
       },
       child: Container(
