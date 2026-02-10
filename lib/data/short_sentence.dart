@@ -28,5 +28,5 @@ final List<Map<String, dynamic>> shortSentenceJson = [
   {"id": 25, "text": "수영장에서 신나게 수영했어요", "levelCategory": "short"},
 ];
 
-List<WordDataModel> get words =>
+List<WordDataModel> get shortSentence =>
     shortSentenceJson.map((data) => WordDataModel.fromJson(data)).toList();

@@ -23,5 +23,5 @@ final List<Map<String, dynamic>> longSentenceJson = [
   {"id": 20, "text": "스크랩북에 사진과 스티커를 예쁘게 붙였어요", "levelCategory": "long"},
 ];
 
-List<WordDataModel> get words =>
+List<WordDataModel> get longSentence =>
     longSentenceJson.map((data) => WordDataModel.fromJson(data)).toList();
