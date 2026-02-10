@@ -1,15 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:th_pronounce_app/data/all_data.dart';
+import 'package:th_pronounce_app/model/word_data_model.dart';
 import 'package:th_pronounce_app/widget/button.dart';
+import 'package:th_pronounce_app/widget/word_card.dart';
 
-class PracticeScreen extends StatelessWidget {
-  final int level, count;
+class PracticeScreen extends StatefulWidget {
+  final int level;
 
-  const PracticeScreen({super.key, required this.level, required this.count});
+  const PracticeScreen({super.key, required this.level});
+
+  @override
+  State<PracticeScreen> createState() => _PracticeScreenState();
+}
+
+class _PracticeScreenState extends State<PracticeScreen> {
+  late List<WordDataModel> wordList;
+  int currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    wordList = AllWordData.getDataByLevel(widget.level);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final currentWord = wordList[currentIndex];
+    final progressValue = (currentIndex + 1) / wordList.length;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -45,7 +66,7 @@ class PracticeScreen extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  "1/$count",
+                  "${currentIndex + 1} / ${wordList.length}",
                   textAlign: TextAlign.right,
                   style: TextStyle(color: Color(0xFF666666), fontSize: 14),
                 ),
@@ -66,7 +87,7 @@ class PracticeScreen extends StatelessWidget {
                   return LinearPercentIndicator(
                     width: constraints.maxWidth,
                     lineHeight: 6,
-                    percent: 0,
+                    percent: progressValue,
                     backgroundColor: Color(0xFFF0F0F0),
                     progressColor: Color(0xFF667EEA),
                     barRadius: Radius.circular(8),
@@ -75,24 +96,7 @@ class PracticeScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 50),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  style: BorderStyle.solid,
-                  color: Color(0xFFE8EAF6),
-                ),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              width: double.infinity,
-              height: 220,
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "사과",
-                  style: TextStyle(fontSize: 60, fontWeight: FontWeight.w500),
-                ),
-              ),
-            ),
+            WordCard(text: currentWord.text, level: widget.level),
             SizedBox(height: 45),
             Column(
               children: [
