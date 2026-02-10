@@ -1,10 +1,9 @@
 class WordDataModel {
-  final String text, category, difficulty;
+  final String text, levelCategory;
   final int id;
 
   WordDataModel.fromJson(Map<String, dynamic> json)
     : text = json["text"],
-      category = json["category"],
-      difficulty = json["difficulty"],
+      levelCategory = json["levelCategory"],
       id = json["id"];
 }
