@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:th_pronounce_app/data/all_data.dart';
 import 'package:th_pronounce_app/model/word_data_model.dart';
+import 'package:th_pronounce_app/screens/result_screen.dart';
 import 'package:th_pronounce_app/widget/button.dart';
 import 'package:th_pronounce_app/widget/word_card.dart';
 
@@ -110,8 +111,20 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 Button(
                   text: "발음 하기",
                   bgColor: Color(0xFFE8EAF6),
-                  borderColor: Colors.transparent,
                   textColor: Color(0xFF667EEA),
+                ),
+                Button(
+                  text: "결과페이지",
+                  bgColor: Color(0xFFE8EAF6),
+                  textColor: Color(0xFF667EEA),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ResultScreen(score: 80),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
