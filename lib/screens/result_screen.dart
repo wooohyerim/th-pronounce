@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:th_pronounce_app/model/result_model.dart';
 import 'package:th_pronounce_app/widget/button.dart';
 import 'package:th_pronounce_app/widget/percent_box.dart';
 
 class ResultScreen extends StatelessWidget {
-  final int score;
+  final ResultModel result;
+  final String word;
+  final int currentIndex, totalCount;
+  final VoidCallback onNext;
 
-  const ResultScreen({super.key, required this.score});
+  const ResultScreen({
+    super.key,
+    required this.result,
+    required this.word,
+    required this.currentIndex,
+    required this.totalCount,
+    required this.onNext,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,22 +57,22 @@ class ResultScreen extends StatelessWidget {
                             radius: 100.0,
                             lineWidth: 15.0,
                             animation: true,
-                            percent: score / 100,
+                            percent: result.score / 100,
                             center: Text(
-                              "$score점",
+                              "${result.score}점",
                               style: TextStyle(
                                 fontSize: 36,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             circularStrokeCap: CircularStrokeCap.round,
-                            progressColor: Color(0xFF667EEA),
+                            progressColor: result.getScoreColor(),
                           );
                         },
                       ),
                       SizedBox(height: 16),
                       Text(
-                        "api 응답 값",
+                        result.getFeedback(),
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -69,7 +80,7 @@ class ResultScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        "응답 값 부연 설명",
+                        result.getFeedbackDetail(),
                         style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF888888),
@@ -79,8 +90,14 @@ class ResultScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          PercentBox(title: "정확도", percentScore: 90),
-                          PercentBox(title: "유창성", percentScore: 80),
+                          PercentBox(
+                            title: "정확도",
+                            percentScore: "${result.accuracy}",
+                          ),
+                          PercentBox(
+                            title: "유창성",
+                            percentScore: "${result.fluency}",
+                          ),
                         ],
                       ),
                     ],
@@ -89,10 +106,14 @@ class ResultScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               Button(
-                text: "발음 하기",
+                text: "다음 단어",
                 bgColor: Color(0xFF667EEA),
                 borderColor: Colors.transparent,
                 textColor: Colors.white,
+                onTap: () {
+                  Navigator.pop(context);
+                  onNext();
+                },
               ),
               SizedBox(height: 12),
               Button(
@@ -102,6 +123,9 @@ class ResultScreen extends StatelessWidget {
                 textColor: Color(0xFF667EEA),
                 icon: Icons.refresh_outlined,
                 iconColor: Color(0xFF667EEA),
+                onTap: () {
+                  Navigator.pop(context);
+                },
               ),
               SizedBox(height: 28),
               Button(

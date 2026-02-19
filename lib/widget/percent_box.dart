@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PercentBox extends StatelessWidget {
-  final String title;
-  final int percentScore;
+  final String title, percentScore;
 
   const PercentBox({
     super.key,

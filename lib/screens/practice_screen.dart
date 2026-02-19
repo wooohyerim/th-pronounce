@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:th_pronounce_app/data/all_data.dart';
+import 'package:th_pronounce_app/model/result_model.dart';
 import 'package:th_pronounce_app/model/word_data_model.dart';
 import 'package:th_pronounce_app/screens/result_screen.dart';
 import 'package:th_pronounce_app/widget/button.dart';
@@ -19,12 +20,143 @@ class PracticeScreen extends StatefulWidget {
 class _PracticeScreenState extends State<PracticeScreen> {
   late List<WordDataModel> wordList;
   int currentIndex = 0;
+  bool isRecording = false;
+  bool isAnalyzing = false;
 
   @override
   void initState() {
     super.initState();
 
     wordList = AllWordData.getDataByLevel(widget.level);
+  }
+
+  Future<void> playPronunciation() async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("발음 재생: ${wordList[currentIndex].text}"),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
+
+  Future<void> recordPronunciation() async {
+    final dialogText = ValueNotifier<String>("녹음 중...");
+
+    setState(() {
+      isRecording = true;
+    });
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return PopScope(
+            canPop: false,
+            child: ValueListenableBuilder<String>(
+              valueListenable: dialogText,
+              builder: (context, message, child) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(0xFF667EEA),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        message,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+
+    try {
+      await await Future.delayed(Duration(seconds: 3));
+
+      setState(() {
+        isRecording = false;
+        isAnalyzing = true;
+      });
+
+      dialogText.value = "분석 중...";
+
+      await Future.delayed(Duration(seconds: 2));
+      Navigator.pop(context);
+      // 임시 결과
+      ResultModel result = ResultModel.random();
+
+      setState(() {
+        isAnalyzing = false;
+      });
+
+      goToResult(result);
+    } catch (e) {
+      setState(() {
+        isRecording = false;
+        isAnalyzing = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("에러 발생: $e"), backgroundColor: Colors.red),
+      );
+    }
+  }
+
+  void goToNext() {
+    if (currentIndex < wordList.length - 1) {
+      setState(() {
+        currentIndex++;
+      });
+
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("연습 완료!"),
+        content: Text("${wordList.length}개 단어를 모두 완료했어요!🎉"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+            child: Text("홈으로"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void goToResult(ResultModel result) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultScreen(
+          result: result,
+          word: wordList[currentIndex].text,
+          currentIndex: currentIndex,
+          totalCount: wordList.length,
+          onNext: goToNext,
+        ),
+      ),
+    );
   }
 
   @override
@@ -106,25 +238,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   bgColor: Colors.white,
                   borderColor: Color(0xFFE8EAF6),
                   textColor: Color(0xFF667EEA),
+                  onTap: playPronunciation, // TODO azure API 적용 예정
                 ),
                 SizedBox(height: 16),
                 Button(
                   text: "발음 하기",
                   bgColor: Color(0xFFE8EAF6),
                   textColor: Color(0xFF667EEA),
-                ),
-                Button(
-                  text: "결과페이지",
-                  bgColor: Color(0xFFE8EAF6),
-                  textColor: Color(0xFF667EEA),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ResultScreen(score: 80),
-                      ),
-                    );
-                  },
+                  onTap: recordPronunciation, // TODO azure API 적용 예정
                 ),
               ],
             ),
