@@ -40,49 +40,18 @@ class _PracticeScreenState extends State<PracticeScreen> {
   }
 
   Future<void> recordPronunciation() async {
-    final dialogText = ValueNotifier<String>("녹음 중...");
-
     setState(() {
       isRecording = true;
     });
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setDialogState) {
-          return PopScope(
-            canPop: false,
-            child: ValueListenableBuilder<String>(
-              valueListenable: dialogText,
-              builder: (context, message, child) {
-                return AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Color(0xFF667EEA),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        message,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          );
-        },
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("녹음 중..."),
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Color(0xFF667EEA),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: EdgeInsets.all(16),
       ),
     );
 
@@ -93,11 +62,21 @@ class _PracticeScreenState extends State<PracticeScreen> {
         isRecording = false;
         isAnalyzing = true;
       });
-
-      dialogText.value = "분석 중...";
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("분석 중...."),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Color(0xFF667EEA),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: EdgeInsets.all(16),
+        ),
+      );
 
       await Future.delayed(Duration(seconds: 2));
-      Navigator.pop(context);
+
       // 임시 결과
       ResultModel result = ResultModel.random();
 
@@ -119,6 +98,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
   }
 
   void goToNext() {
+    if (!mounted) {
+      return;
+    }
+
     if (currentIndex < wordList.length - 1) {
       setState(() {
         currentIndex++;
@@ -145,6 +128,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
   }
 
   void goToResult(ResultModel result) {
+    if (!mounted) return;
+
     Navigator.push(
       context,
       MaterialPageRoute(
