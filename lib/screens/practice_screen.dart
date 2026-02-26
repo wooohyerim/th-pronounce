@@ -5,6 +5,8 @@ import 'package:th_pronounce_app/data/all_data.dart';
 import 'package:th_pronounce_app/model/result_model.dart';
 import 'package:th_pronounce_app/model/word_data_model.dart';
 import 'package:th_pronounce_app/screens/result_screen.dart';
+import 'package:th_pronounce_app/service/azure_speech_service.dart';
+import 'package:th_pronounce_app/service/recording_service.dart';
 import 'package:th_pronounce_app/widget/button.dart';
 import 'package:th_pronounce_app/widget/word_card.dart';
 
@@ -23,11 +25,20 @@ class _PracticeScreenState extends State<PracticeScreen> {
   bool isRecording = false;
   bool isAnalyzing = false;
 
+  final RecordingService _recordingService = RecordingService();
+  final AzureSpeechService _azureSpeechService = AzureSpeechService();
+
   @override
   void initState() {
     super.initState();
 
     wordList = AllWordData.getDataByLevel(widget.level);
+  }
+
+  @override
+  void dispose() {
+    _recordingService.dispose();
+    super.dispose();
   }
 
   Future<void> playPronunciation() async {
@@ -56,12 +67,21 @@ class _PracticeScreenState extends State<PracticeScreen> {
     );
 
     try {
-      await await Future.delayed(Duration(seconds: 3));
+      _recordingService.startRecording();
+
+      await Future.delayed(Duration(seconds: 3));
+
+      final audioPath = await _recordingService.stopRecording();
+
+      if (audioPath == null) {
+        throw Exception('녹음 파일을 생성하지 못했습니다');
+      }
 
       setState(() {
         isRecording = false;
         isAnalyzing = true;
       });
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("분석 중...."),
@@ -77,8 +97,13 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
       await Future.delayed(Duration(seconds: 2));
 
-      // 임시 결과
-      ResultModel result = ResultModel.random();
+      final result = await _azureSpeechService.analyzePronunciation(
+        audioPath: audioPath,
+        referenceText: wordList[currentIndex].text,
+      );
+
+      // test result
+      // ResultModel result = ResultModel.random();
 
       setState(() {
         isAnalyzing = false;
@@ -230,7 +255,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   text: "발음 하기",
                   bgColor: Color(0xFFE8EAF6),
                   textColor: Color(0xFF667EEA),
-                  onTap: recordPronunciation, // TODO azure API 적용 예정
+                  onTap: recordPronunciation,
                 ),
               ],
             ),
