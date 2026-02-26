@@ -1,19 +1,16 @@
-// lib/services/config_service.dart
-
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 class ConfigService {
   static final FirebaseRemoteConfig _remoteConfig =
       FirebaseRemoteConfig.instance;
 
-  // 🔥 초기화
   static Future<void> initialize() async {
     try {
       // Remote Config 설정
       await _remoteConfig.setConfigSettings(
         RemoteConfigSettings(
           fetchTimeout: const Duration(seconds: 10),
-          minimumFetchInterval: Duration.zero, // 🔥 개발 중: 즉시 업데이트
+          minimumFetchInterval: Duration.zero, // 개발 중: 즉시 업데이트
         ),
       );
 
@@ -26,11 +23,11 @@ class ConfigService {
       // 🔥 최신 값 가져오기
       await _remoteConfig.fetchAndActivate();
 
-      print('✅ Firebase Remote Config 초기화 완료');
-      print('   Azure Key: ${azureSpeechKey.isEmpty ? "❌ 없음" : "✅ 설정됨"}');
-      print('   Azure Region: $azureSpeechRegion');
+      print('Firebase Remote Config 초기화 완료');
+      print('Azure Key: ${azureSpeechKey.isEmpty ? "없음" : "설정됨"}');
+      print('Azure Region: $azureSpeechRegion');
     } catch (e) {
-      print('❌ Firebase Remote Config 초기화 실패: $e');
+      print('Firebase Remote Config 초기화 실패: $e');
     }
   }
 
