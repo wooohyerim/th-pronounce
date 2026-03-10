@@ -15,10 +15,10 @@ class TtsService {
       await _tts.setSpeechRate(0.4);
 
       // 볼륨 (0.0 ~ 1.0)
-      await _tts.setVolume(1.0);
+      await _tts.setVolume(0.9);
 
       // 음높이 (0.5 ~ 2.0)
-      await _tts.setPitch(1.0);
+      await _tts.setPitch(0.8);
 
       _isInitialized = true;
       print('TTS 초기화 완료');
@@ -47,7 +47,7 @@ class TtsService {
   double _getSpeechRate(int level) {
     switch (level) {
       case 1:
-        return 0.6;
+        return 0.5;
       case 2:
         return 0.5;
       case 3:
