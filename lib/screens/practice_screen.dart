@@ -7,7 +7,9 @@ import 'package:th_pronounce_app/model/word_data_model.dart';
 import 'package:th_pronounce_app/screens/result_screen.dart';
 import 'package:th_pronounce_app/service/azure_speech_service.dart';
 import 'package:th_pronounce_app/service/recording_service.dart';
+import 'package:th_pronounce_app/service/tts_service.dart';
 import 'package:th_pronounce_app/widget/button.dart';
+import 'package:th_pronounce_app/widget/practice_screen/recording_button.dart';
 import 'package:th_pronounce_app/widget/word_card.dart';
 
 class PracticeScreen extends StatefulWidget {
@@ -24,54 +26,77 @@ class _PracticeScreenState extends State<PracticeScreen> {
   int currentIndex = 0;
   bool isRecording = false;
   bool isAnalyzing = false;
+  bool isPlaying = false;
 
-  final RecordingService _recordingService = RecordingService();
-  final AzureSpeechService _azureSpeechService = AzureSpeechService();
+  final RecordingService recordingService = RecordingService();
+  final AzureSpeechService azureSpeechService = AzureSpeechService();
+  final TtsService ttsService = TtsService();
 
   @override
   void initState() {
     super.initState();
 
     wordList = AllWordData.getDataByLevel(widget.level);
+    ttsService.initialize();
   }
 
   @override
   void dispose() {
-    _recordingService.dispose();
+    recordingService.dispose();
+    ttsService.initialize();
     super.dispose();
   }
 
   Future<void> playPronunciation() async {
+    if (isPlaying) return; // 이미 재생 중이면 무시
+
+    setState(() {
+      isPlaying = true;
+    });
+
+    try {
+      await ttsService.speak(wordList[currentIndex].text, level: widget.level);
+
+      // 재생 완료 후 딜레이
+      await Future.delayed(Duration(milliseconds: 500));
+
+      setState(() {
+        isPlaying = false;
+      });
+    } catch (e) {
+      setState(() {
+        isPlaying = false;
+      });
+      showErrorSnackBar("발음 재생 실패: $e");
+    }
+  }
+
+  void showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("발음 재생: ${wordList[currentIndex].text}"),
-        duration: Duration(seconds: 1),
-      ),
+      SnackBar(content: Text("❌ $message"), backgroundColor: Colors.red),
     );
   }
 
-  Future<void> recordPronunciation() async {
+  // 녹음 시작
+  Future<void> startRecording() async {
     setState(() {
       isRecording = true;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("녹음 중..."),
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Color(0xFF667EEA),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: EdgeInsets.all(16),
-      ),
-    );
-
     try {
-      _recordingService.startRecording();
+      recordingService.startRecording();
+    } catch (e) {
+      setState(() {
+        isRecording = false;
+      });
+      showErrorSnackBar("녹음 시작 실패: $e");
+    }
+  }
 
-      await Future.delayed(Duration(seconds: 3));
-
-      final audioPath = await _recordingService.stopRecording();
+  // 녹음 중지 및 분석
+  Future<void> stopRecordingAndAnalyze() async {
+    try {
+      final audioPath = await recordingService.stopRecording();
 
       if (audioPath == null) {
         throw Exception('녹음 파일을 생성하지 못했습니다');
@@ -82,28 +107,23 @@ class _PracticeScreenState extends State<PracticeScreen> {
         isAnalyzing = true;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("분석 중...."),
-          duration: Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Color(0xFF667EEA),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          margin: EdgeInsets.all(16),
-        ),
-      );
+      await analyzeAndShowResult(audioPath);
+    } catch (e) {
+      setState(() {
+        isRecording = false;
+        isAnalyzing = false;
+      });
+      showErrorSnackBar("에러 발생: $e");
+    }
+  }
 
-      await Future.delayed(Duration(seconds: 2));
-
-      final result = await _azureSpeechService.analyzePronunciation(
+  // 분석 결과
+  Future<void> analyzeAndShowResult(String audioPath) async {
+    try {
+      final result = await azureSpeechService.analyzePronunciation(
         audioPath: audioPath,
         referenceText: wordList[currentIndex].text,
       );
-
-      // test result
-      // ResultModel result = ResultModel.random();
 
       setState(() {
         isAnalyzing = false;
@@ -112,13 +132,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
       goToResult(result);
     } catch (e) {
       setState(() {
-        isRecording = false;
         isAnalyzing = false;
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("에러 발생: $e"), backgroundColor: Colors.red),
-      );
+      showErrorSnackBar("분석 실패: $e");
     }
   }
 
@@ -248,14 +264,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   bgColor: Colors.white,
                   borderColor: Color(0xFFE8EAF6),
                   textColor: Color(0xFF667EEA),
-                  onTap: playPronunciation, // TODO azure API 적용 예정
+                  onTap: playPronunciation,
                 ),
                 SizedBox(height: 16),
-                Button(
-                  text: "발음 하기",
-                  bgColor: Color(0xFFE8EAF6),
-                  textColor: Color(0xFF667EEA),
-                  onTap: recordPronunciation,
+
+                RecordingButton(
+                  isRecording: isRecording,
+                  isAnalyzing: isAnalyzing,
+                  onStart: startRecording,
+                  onStop: stopRecordingAndAnalyze,
                 ),
               ],
             ),
