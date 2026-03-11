@@ -1,23 +1,74 @@
 import 'package:flutter/material.dart';
 
 class ResultModel {
-  final int score, accuracy, fluency;
+  final int score, accuracy, fluency, completeness;
+  final String recognizedText;
 
-  ResultModel.fromJson(Map<String, dynamic> json)
-    : score = (json['NBest'][0]['PronunciationAssessment']['PronScore'] as num)
-          .round(),
-      accuracy =
-          (json['NBest'][0]['PronunciationAssessment']['AccuracyScore'] as num)
-              .round(),
-      fluency =
-          (json['NBest'][0]['PronunciationAssessment']['FluencyScore'] as num)
-              .round();
+  ResultModel({
+    required this.score,
+    required this.accuracy,
+    required this.fluency,
+    this.completeness = 100,
+    this.recognizedText = '',
+  });
+
+  factory ResultModel.fromJson(Map<String, dynamic> json) {
+    try {
+      // NBest 배열에서 첫 번째 결과
+      final nBest = json['NBest'] as List<dynamic>?;
+
+      if (nBest == null || nBest.isEmpty) {
+        throw Exception('NBest 배열이 비어있습니다');
+      }
+
+      final firstResult = nBest[0] as Map<String, dynamic>;
+
+      final accuracyScore =
+          (firstResult['AccuracyScore'] as num?)?.round() ?? 0;
+      final fluencyScore = (firstResult['FluencyScore'] as num?)?.round() ?? 0;
+      final completenessScore =
+          (firstResult['CompletenessScore'] as num?)?.round() ?? 100;
+      final pronScore = (firstResult['PronScore'] as num?)?.round() ?? 0;
+
+      final recognizedText =
+          (firstResult['Display'] as String? ??
+                  firstResult['Lexical'] as String? ??
+                  '')
+              .replaceAll('.', '');
+
+      print('📊 발음 점수:');
+      print('   정확도: $accuracyScore');
+      print('   유창성: $fluencyScore');
+      print('   완성도: $completenessScore');
+      print('   종합: $pronScore');
+      print('   인식된 텍스트: $recognizedText');
+
+      return ResultModel(
+        score: pronScore,
+        accuracy: accuracyScore,
+        fluency: fluencyScore,
+        completeness: completenessScore,
+        recognizedText: recognizedText,
+      );
+    } catch (e) {
+      print('❌ ResultModel 변환 실패: $e');
+      print('   원본 응답: $json');
+      rethrow;
+    }
+  }
 
   // 테스트용 점수
-  ResultModel.random()
-    : score = 70 + (DateTime.now().second % 30),
-      accuracy = 75 + (DateTime.now().second % 25),
-      fluency = 80 + (DateTime.now().second % 20);
+  factory ResultModel.random() {
+    final score = 70 + (DateTime.now().second % 30);
+
+    return ResultModel(
+      score: score,
+      accuracy: 75 + (DateTime.now().second % 25),
+      fluency: 80 + (DateTime.now().second % 20),
+      completeness: 100,
+      recognizedText: '테스트',
+    );
+  }
 
   String getFeedback() {
     if (score >= 95) return "완벽해요! 🎉";
@@ -45,6 +96,6 @@ class ResultModel {
 
   @override
   String toString() {
-    return 'result(score: $score, accuracy: $accuracy, fluency: $fluency)';
+    return 'result(score: $score, accuracy: $accuracy, fluency: $fluency, completeness: $completeness, text: $recognizedText)';
   }
 }

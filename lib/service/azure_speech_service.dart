@@ -32,6 +32,19 @@ class AzureSpeechService {
       final audioBytes = await audioFile.readAsBytes();
       print('오디오 크기: ${audioBytes.length} bytes');
 
+      final pronunciationConfig = {
+        "referenceText": referenceText,
+        "gradingSystem": "HundredMark",
+        "granularity": "Phoneme",
+        "dimension": "Comprehensive",
+        "enableMiscue": false,
+      };
+
+      final pronunciationParamJson = json.encode(pronunciationConfig);
+      final pronunciationParamBase64 = base64.encode(
+        utf8.encode(pronunciationParamJson),
+      );
+
       // API URL
       final url = Uri.parse(
         'https://$region.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1'
@@ -48,6 +61,7 @@ class AzureSpeechService {
           'Ocp-Apim-Subscription-Key': apiKey,
           'Content-Type': 'audio/wav; codecs=audio/pcm; samplerate=16000',
           'Accept': 'application/json',
+          'Pronunciation-Assessment': pronunciationParamBase64,
         },
         body: audioBytes,
       );

@@ -134,6 +134,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
       setState(() {
         isAnalyzing = false;
       });
+
+      goToResult(ResultModel.random());
       showErrorSnackBar("분석 실패: $e");
     }
   }
