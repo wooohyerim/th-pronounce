@@ -12,6 +12,10 @@ class RecordingService {
   Future<bool> requestPermission() async {
     final status = await Permission.microphone.request();
 
+    if (status.isPermanentlyDenied) {
+      return openAppSettings();
+    }
+
     return status.isGranted;
   }
 
