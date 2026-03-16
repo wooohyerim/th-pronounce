@@ -30,7 +30,7 @@ class RecordingService {
       _recordingPath =
           "${directory.path}/recording_${DateTime.now().millisecondsSinceEpoch}.wav";
 
-      print('녹음 시작: $_recordingPath');
+      print('녹음 시작');
 
       await _recorder.start(
         RecordConfig(
@@ -49,7 +49,7 @@ class RecordingService {
   Future<String?> stopRecording() async {
     try {
       final path = await _recorder.stop();
-      print('녹음 중지: $path');
+      print('녹음 중지');
 
       if (path != null) {
         final file = File(path);
@@ -57,6 +57,12 @@ class RecordingService {
         final size = await file.length();
         print('파일 존재: $exists');
         print('파일 크기: $size bytes');
+
+        // 너무 작으면 (< 5KB) 유효하지 않은 녹음
+        if (size < 5000) {
+          print('   ⚠️ 녹음 파일이 너무 작음 (빈 녹음)');
+          return null;
+        }
       }
 
       return path;

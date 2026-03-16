@@ -52,8 +52,9 @@ class ResultModel {
       );
     } catch (e) {
       print('❌ ResultModel 변환 실패: $e');
-      print('   원본 응답: $json');
-      rethrow;
+      print('원본 응답: $json');
+
+      throw Exception('음성을 인식하지 못했습니다. 다시 시도해주세요.');
     }
   }
 

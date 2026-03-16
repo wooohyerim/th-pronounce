@@ -9,6 +9,7 @@ import 'package:th_pronounce_app/service/azure_speech_service.dart';
 import 'package:th_pronounce_app/service/recording_service.dart';
 import 'package:th_pronounce_app/service/tts_service.dart';
 import 'package:th_pronounce_app/widget/button.dart';
+import 'package:th_pronounce_app/widget/practice_screen/error_dialog.dart';
 import 'package:th_pronounce_app/widget/practice_screen/recording_button.dart';
 import 'package:th_pronounce_app/widget/word_card.dart';
 
@@ -99,7 +100,24 @@ class _PracticeScreenState extends State<PracticeScreen> {
       final audioPath = await recordingService.stopRecording();
 
       if (audioPath == null) {
-        throw Exception('녹음 파일을 생성하지 못했습니다');
+        setState(() {
+          isRecording = false;
+        });
+
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("🎤 녹음 실패"),
+            content: Text("녹음된 음성이 없습니다.\n다시 시도해주세요."),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("확인"),
+              ),
+            ],
+          ),
+        );
+        return;
       }
 
       setState(() {
@@ -135,8 +153,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
         isAnalyzing = false;
       });
 
-      goToResult(ResultModel.random());
-      showErrorSnackBar("분석 실패: $e");
+      showDialog(
+        context: context,
+        builder: (context) => ErrorDialog(error: e as Exception),
+      );
     }
   }
 
