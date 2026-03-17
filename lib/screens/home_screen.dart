@@ -1,10 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:th_pronounce_app/data/all_data.dart';
+import 'package:th_pronounce_app/screens/practice_screen.dart';
+import 'package:th_pronounce_app/service/progress_service.dart';
 import 'package:th_pronounce_app/widget/level_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final progressService = ProgressService(); // 🔥 추가
+  final Map<int, int> wordProgress = {};
+
+  @override
+  void initState() {
+    super.initState();
+    loadAllProgress();
+  }
+
+  // 모든 레벨 진행도 불러오기
+  Future<void> loadAllProgress() async {
+    for (int level = 1; level <= 3; level++) {
+      final progress = await progressService.getWordProgress(level);
+
+      if (!mounted) return;
+
+      setState(() {
+        wordProgress[level] = progress;
+      });
+    }
+  }
+
+  // 레벨 선택 후 돌아왔을 때 진행도 새로고침
+  Future<void> navigateToPractice(int level) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PracticeScreen(level: level)),
+    );
+
+    if (!mounted) return;
+
+    loadAllProgress();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +91,8 @@ class HomeScreen extends StatelessWidget {
                   description: "기초 발음을 위한 단어 연습",
                   level: 1,
                   count: wordLength,
+                  progress: wordProgress[1] ?? 0,
+                  onTap: () => navigateToPractice(1),
                 ),
                 SizedBox(height: 24),
                 LevelCard(
@@ -57,6 +100,8 @@ class HomeScreen extends StatelessWidget {
                   description: "일상 표현으로 발음 다듬기",
                   level: 2,
                   count: shortLength,
+                  progress: wordProgress[2] ?? 0,
+                  onTap: () => navigateToPractice(2),
                 ),
                 SizedBox(height: 24),
                 LevelCard(
@@ -64,6 +109,8 @@ class HomeScreen extends StatelessWidget {
                   description: "복잡한 문장으로 실력 완성",
                   level: 3,
                   count: longLength,
+                  progress: wordProgress[3] ?? 0,
+                  onTap: () => navigateToPractice(3),
                 ),
               ],
             ),

@@ -117,7 +117,7 @@ class ResultScreen extends StatelessWidget {
                 textColor: Colors.white,
                 onTap: () {
                   Navigator.pop(context);
-                  onNext();
+                  Future.microtask(() => onNext());
                 },
               ),
               SizedBox(height: 12),
