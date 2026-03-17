@@ -43,6 +43,12 @@ class ResultModel {
       print('   종합: $pronScore');
       print('   인식된 텍스트: $recognizedText');
 
+      // 🔥 최소 점수 검증 (중요한 지표들)
+      if (pronScore < 10 || accuracyScore < 10 || completenessScore < 10) {
+        print('   ⚠️ 점수가 너무 낮음 - 유효하지 않은 발음');
+        throw Exception('음성을 명확하게 인식하지 못했습니다');
+      }
+
       return ResultModel(
         score: pronScore,
         accuracy: accuracyScore,
