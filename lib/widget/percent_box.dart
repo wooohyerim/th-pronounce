@@ -17,7 +17,7 @@ class PercentBox extends StatelessWidget {
         color: Color(0xFFFAFBFF),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
         child: Column(
           children: [
             Text(
@@ -28,7 +28,7 @@ class PercentBox extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(width: 10),
+            SizedBox(height: 4),
             Text(
               "$percentScore%",
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),

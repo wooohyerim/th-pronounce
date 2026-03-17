@@ -90,13 +90,18 @@ class ResultScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          PercentBox(
-                            title: "정확도",
-                            percentScore: "${result.accuracy}",
+                          Expanded(
+                            child: PercentBox(
+                              title: "정확도",
+                              percentScore: "${result.accuracy}",
+                            ),
                           ),
-                          PercentBox(
-                            title: "유창성",
-                            percentScore: "${result.fluency}",
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: PercentBox(
+                              title: "유창성",
+                              percentScore: "${result.fluency}",
+                            ),
                           ),
                         ],
                       ),
