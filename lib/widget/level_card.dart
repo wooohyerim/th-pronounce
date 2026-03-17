@@ -83,7 +83,7 @@ class LevelCard extends StatelessWidget {
         style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.bold,
-          color: Color(0xFF667EEA),
+          color: Colors.white,
         ),
       ),
     );
