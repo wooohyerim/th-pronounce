@@ -6,9 +6,11 @@ import 'package:th_pronounce_app/model/result_model.dart';
 import 'package:th_pronounce_app/model/word_data_model.dart';
 import 'package:th_pronounce_app/screens/result_screen.dart';
 import 'package:th_pronounce_app/service/azure_speech_service.dart';
+import 'package:th_pronounce_app/service/progress_service.dart';
 import 'package:th_pronounce_app/service/recording_service.dart';
 import 'package:th_pronounce_app/service/tts_service.dart';
 import 'package:th_pronounce_app/widget/button.dart';
+import 'package:th_pronounce_app/widget/practice_screen/complete_dialog.dart';
 import 'package:th_pronounce_app/widget/practice_screen/error_dialog.dart';
 import 'package:th_pronounce_app/widget/practice_screen/recording_button.dart';
 import 'package:th_pronounce_app/widget/word_card.dart';
@@ -32,6 +34,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
   final RecordingService recordingService = RecordingService();
   final AzureSpeechService azureSpeechService = AzureSpeechService();
   final TtsService ttsService = TtsService();
+  final ProgressService progressService = ProgressService();
 
   @override
   void initState() {
@@ -39,12 +42,32 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
     wordList = AllWordData.getDataByLevel(widget.level);
     ttsService.initialize();
+    loadProgress();
+  }
+
+  // 진행도 불러오기
+  Future<void> loadProgress() async {
+    final progress = await progressService.getWordProgress(widget.level);
+
+    if (progress >= wordList.length) {
+      return;
+    }
+
+    if (progress <= 0) {
+      return;
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      currentIndex = progress;
+    });
   }
 
   @override
   void dispose() {
     recordingService.dispose();
-    ttsService.initialize();
+    ttsService.dispose();
     super.dispose();
   }
 
@@ -165,35 +188,30 @@ class _PracticeScreenState extends State<PracticeScreen> {
       return;
     }
 
-    if (currentIndex < wordList.length - 1) {
-      setState(() {
-        currentIndex++;
-      });
-
+    if (currentIndex >= wordList.length - 1) {
+      CompleteDialog.show(
+        context,
+        level: widget.level,
+        onRestart: () {
+          setState(() {
+            currentIndex = 0;
+          });
+        },
+      );
       return;
     }
 
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("연습 완료!"),
-        content: Text("${wordList.length}개 단어를 모두 완료했어요!🎉"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
-            child: Text("홈으로"),
-          ),
-        ],
-      ),
-    );
+    setState(() {
+      currentIndex++;
+    });
+
+    progressService.saveWordProgress(widget.level, currentIndex);
   }
 
-  void goToResult(ResultModel result) {
+  void goToResult(ResultModel result) async {
     if (!mounted) return;
 
-    Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ResultScreen(
