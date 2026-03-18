@@ -4,6 +4,7 @@ import 'package:th_pronounce_app/data/all_data.dart';
 import 'package:th_pronounce_app/screens/practice_screen.dart';
 import 'package:th_pronounce_app/service/progress_service.dart';
 import 'package:th_pronounce_app/widget/level_card.dart';
+import 'package:th_pronounce_app/widget/stats_preview.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final progressService = ProgressService();
   final Map<int, int> wordProgress = {};
+  final statsKey = GlobalKey<StatsPreviewState>();
 
   @override
   void initState() {
@@ -24,15 +26,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // 모든 레벨 진행도 불러오기
   Future<void> loadAllProgress() async {
-    for (int level = 1; level <= 3; level++) {
-      final progress = await progressService.getWordProgress(level);
+    final results = await Future.wait([
+      progressService.getWordProgress(1),
+      progressService.getWordProgress(2),
+      progressService.getWordProgress(3),
+    ]);
 
-      if (!mounted) return;
+    if (!mounted) return;
 
-      setState(() {
-        wordProgress[level] = progress;
-      });
-    }
+    setState(() {
+      wordProgress[1] = results[0];
+      wordProgress[2] = results[1];
+      wordProgress[3] = results[2];
+    });
   }
 
   // 레벨 선택 후 돌아왔을 때 진행도 새로고침
@@ -45,6 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
 
     loadAllProgress();
+
+    statsKey.currentState?.loadStats();
   }
 
   @override
@@ -112,6 +120,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   progress: wordProgress[3] ?? 0,
                   onTap: () => navigateToPractice(3),
                 ),
+                SizedBox(height: 40),
+                StatsPreview(key: statsKey),
+                // SizedBox(height: 20),
               ],
             ),
           ],
