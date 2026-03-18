@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final progressService = ProgressService(); // 🔥 추가
+  final progressService = ProgressService();
   final Map<int, int> wordProgress = {};
 
   @override
