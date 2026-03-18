@@ -8,6 +8,7 @@ import 'package:th_pronounce_app/screens/result_screen.dart';
 import 'package:th_pronounce_app/service/azure_speech_service.dart';
 import 'package:th_pronounce_app/service/progress_service.dart';
 import 'package:th_pronounce_app/service/recording_service.dart';
+import 'package:th_pronounce_app/service/stats_service.dart';
 import 'package:th_pronounce_app/service/tts_service.dart';
 import 'package:th_pronounce_app/widget/button.dart';
 import 'package:th_pronounce_app/widget/practice_screen/complete_dialog.dart';
@@ -35,6 +36,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
   final AzureSpeechService azureSpeechService = AzureSpeechService();
   final TtsService ttsService = TtsService();
   final ProgressService progressService = ProgressService();
+  final StatsService statsService = StatsService();
 
   @override
   void initState() {
@@ -170,6 +172,11 @@ class _PracticeScreenState extends State<PracticeScreen> {
         isAnalyzing = false;
       });
 
+      await statsService.incrementTodayCount();
+      await statsService.saveScore(result.score);
+
+      await progressService.saveWordProgress(widget.level, currentIndex + 1);
+
       goToResult(result);
     } catch (e) {
       setState(() {
@@ -204,8 +211,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
     setState(() {
       currentIndex++;
     });
-
-    progressService.saveWordProgress(widget.level, currentIndex);
   }
 
   void goToResult(ResultModel result) async {

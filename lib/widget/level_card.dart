@@ -76,7 +76,7 @@ class LevelCard extends StatelessWidget {
       // crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          "$progress/$count",
+          "${progress + 1}/$count",
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
