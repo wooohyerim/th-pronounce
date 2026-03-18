@@ -18,7 +18,7 @@ class LevelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final percentage = _calculatePercentage();
+    final percentage = calculatePercentage();
     final hasProgress = progress > 0;
 
     return GestureDetector(
@@ -37,9 +37,9 @@ class LevelCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(hasProgress, percentage),
+              buildHeader(hasProgress, percentage),
               SizedBox(height: 8),
-              _buildDescription(),
+              buildDescription(),
             ],
           ),
         ),
@@ -48,7 +48,7 @@ class LevelCard extends StatelessWidget {
   }
 
   // 🔥 퍼센테지 계산
-  int _calculatePercentage() {
+  int calculatePercentage() {
     if (count <= 0) {
       return 0;
     }
@@ -56,7 +56,7 @@ class LevelCard extends StatelessWidget {
   }
 
   // 헤더 (타이틀 + 개수 or 퍼센테지)
-  Widget _buildHeader(bool hasProgress, int percentage) {
+  Widget buildHeader(bool hasProgress, int percentage) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -64,14 +64,14 @@ class LevelCard extends StatelessWidget {
           title,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        if (hasProgress) _buildPercentageBadge(percentage),
-        if (!hasProgress) _buildCountBadge(),
+        if (hasProgress) buildPercentageBadge(percentage),
+        if (!hasProgress) buildCountBadge(),
       ],
     );
   }
 
   // 퍼센테지 뱃지 (진행도 있을 때)
-  Widget _buildPercentageBadge(int percentage) {
+  Widget buildPercentageBadge(int percentage) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -90,7 +90,7 @@ class LevelCard extends StatelessWidget {
   }
 
   // 개수 뱃지 (진행도 없을 때)
-  Widget _buildCountBadge() {
+  Widget buildCountBadge() {
     return Text(
       "$count개",
       style: TextStyle(
@@ -102,7 +102,7 @@ class LevelCard extends StatelessWidget {
   }
 
   // 설명
-  Widget _buildDescription() {
+  Widget buildDescription() {
     return Text(
       description,
       style: TextStyle(
