@@ -47,7 +47,7 @@ class LevelCard extends StatelessWidget {
     );
   }
 
-  // 🔥 퍼센테지 계산
+  // 퍼센테지 계산
   int calculatePercentage() {
     if (count <= 0) {
       return 0;
@@ -64,30 +64,63 @@ class LevelCard extends StatelessWidget {
           title,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        if (hasProgress) buildPercentageBadge(percentage),
+        if (hasProgress) buildProgressInfo(percentage),
         if (!hasProgress) buildCountBadge(),
       ],
     );
   }
 
-  // 퍼센테지 뱃지 (진행도 있을 때)
-  Widget buildPercentageBadge(int percentage) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: Color(0xFF667EEA).withAlpha(150),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        "$percentage%",
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+  // 진행도 정보 (퍼센테지 + 개수)
+  Widget buildProgressInfo(int percentage) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(
+            color: Color(0xFF667EEA),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Text(
+            "$percentage%",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
         ),
-      ),
+        SizedBox(height: 4),
+        Text(
+          "$progress/$count",
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF999999),
+          ),
+        ),
+      ],
     );
   }
+
+  // 퍼센테지 뱃지 (진행도 있을 때)
+  // Widget buildPercentageBadge(int percentage) {
+  //   return Container(
+  //     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+  //     decoration: BoxDecoration(
+  //       color: Color(0xFF667EEA).withAlpha(150),
+  //       borderRadius: BorderRadius.circular(12),
+  //     ),
+  //     child: Text(
+  //       "$percentage%",
+  //       style: TextStyle(
+  //         fontSize: 14,
+  //         fontWeight: FontWeight.bold,
+  //         color: Colors.white,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // 개수 뱃지 (진행도 없을 때)
   Widget buildCountBadge() {
@@ -100,6 +133,28 @@ class LevelCard extends StatelessWidget {
       ),
     );
   }
+
+  // Widget buildProgressCount(bool hasProgress) {
+  //   if (hasProgress) {
+  //     return Text(
+  //       "$progress/$count", // 🔥 2/35
+  //       style: TextStyle(
+  //         fontSize: 14,
+  //         fontWeight: FontWeight.w600,
+  //         color: Color(0xFF667EEA),
+  //       ),
+  //     );
+  //   }
+
+  //   return Text(
+  //     "$count개",
+  //     style: TextStyle(
+  //       fontSize: 16,
+  //       fontWeight: FontWeight.bold,
+  //       color: Color(0xFF667EEA),
+  //     ),
+  //   );
+  // }
 
   // 설명
   Widget buildDescription() {
