@@ -72,9 +72,18 @@ class LevelCard extends StatelessWidget {
 
   // 진행도 정보 (퍼센테지 + 개수)
   Widget buildProgressInfo(int percentage) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Row(
+      // crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        Text(
+          "$progress/$count",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF999999),
+          ),
+        ),
+        SizedBox(width: 8),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
@@ -88,15 +97,6 @@ class LevelCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-          ),
-        ),
-        SizedBox(height: 4),
-        Text(
-          "$progress/$count",
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF999999),
           ),
         ),
       ],
