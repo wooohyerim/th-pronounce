@@ -73,7 +73,7 @@ flutter_launcher_icons:
 
 flutter_native_splash:
   # Android 11 이하 & iOS
-  background_image: assets/images/th_splash_screen.png
+  background_image: assets/images/splash_logo.png
   color: "#F2F2F7"
 
   # Android 12+
