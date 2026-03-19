@@ -90,7 +90,7 @@ class StatsPreviewState extends State<StatsPreview> {
         buildDivider(),
         buildStat("평균 점수", "$averageScore점"),
         buildDivider(),
-        buildStat("연습 일수", "$practiceDays일"),
+        buildStat("누적 일수", "$practiceDays일"),
       ],
     );
   }
