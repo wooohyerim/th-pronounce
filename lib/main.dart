@@ -32,6 +32,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: '-th 발음 교정 앱', home: HomeScreen());
+    return MaterialApp(
+      theme: ThemeData(fontFamily: "Pretendard"),
+      title: '-th 발음 교정 앱',
+      home: HomeScreen(),
+    );
   }
 }
