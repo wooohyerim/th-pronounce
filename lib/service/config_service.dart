@@ -20,10 +20,9 @@ class ConfigService {
         'azure_speech_region': 'koreacentral',
       });
 
-      // 🔥 최신 값 가져오기
+      // 최신 값 가져오기
       await _remoteConfig.fetchAndActivate();
 
-      print('Firebase Remote Config 초기화 완료');
       print('Azure Key: ${azureSpeechKey.isEmpty ? "없음" : "설정됨"}');
       print('Azure Region: $azureSpeechRegion');
     } catch (e) {
@@ -31,11 +30,11 @@ class ConfigService {
     }
   }
 
-  // 🔥 Azure Speech Key 가져오기
+  // Azure Speech Key 가져오기
   static String get azureSpeechKey =>
       _remoteConfig.getString('azure_speech_key');
 
-  // 🔥 Azure Region 가져오기
+  // Azure Region 가져오기
   static String get azureSpeechRegion =>
       _remoteConfig.getString('azure_speech_region');
 
