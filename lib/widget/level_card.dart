@@ -137,7 +137,7 @@ class LevelCard extends StatelessWidget {
   // Widget buildProgressCount(bool hasProgress) {
   //   if (hasProgress) {
   //     return Text(
-  //       "$progress/$count", // 🔥 2/35
+  //       "$progress/$count", // 2/35
   //       style: TextStyle(
   //         fontSize: 14,
   //         fontWeight: FontWeight.w600,
