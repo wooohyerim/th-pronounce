@@ -60,7 +60,7 @@ class RecordingService {
 
         // 너무 작으면 (< 5KB) 유효하지 않은 녹음
         if (size < 5000) {
-          print('   ⚠️ 녹음 파일이 너무 작음 (빈 녹음)');
+          print('녹음 파일이 너무 작음 (빈 녹음)');
           return null;
         }
       }

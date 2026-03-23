@@ -9,7 +9,6 @@ class ProgressService {
     final prefs = await SharedPreferences.getInstance();
     final key = '${keyWordProgress}_level_$level';
     await prefs.setInt(key, index);
-    // print('💾 단어 진행도 저장: 레벨 $level, 인덱스 $index');
   }
 
   // 단어 진행도 불러오기
@@ -21,8 +20,6 @@ class ProgressService {
     if (progress == null) {
       return 0;
     }
-
-    // print('📂 단어 진행도 불러오기: 레벨 $level, 인덱스 $progress');
     return progress;
   }
 
@@ -31,7 +28,6 @@ class ProgressService {
     final prefs = await SharedPreferences.getInstance();
     final key = '${keySentenceProgress}_level_$level';
     await prefs.setInt(key, index);
-    // print('💾 문장 진행도 저장: 레벨 $level, 인덱스 $index');
   }
 
   // 문장 진행도 불러오기
@@ -43,8 +39,6 @@ class ProgressService {
     if (progress == null) {
       return 0;
     }
-
-    // print('📂 문장 진행도 불러오기: 레벨 $level, 인덱스 $progress');
     return progress;
   }
 
@@ -62,6 +56,6 @@ class ProgressService {
     await prefs.remove(key);
 
     final type = isWord ? "단어" : "문장";
-    print('🗑️ 레벨 $level $type 진행도 초기화');
+    print('레벨 $level $type 진행도 초기화');
   }
 }
