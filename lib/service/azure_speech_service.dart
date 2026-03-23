@@ -101,7 +101,7 @@ class AzureSpeechService {
     }
   }
 
-  // 잘못된 "th" 발음 체크 (함수형 스타일)
+  // 잘못된 "th" 발음 체크
   bool _checkWrongThPronunciation(List words) {
     if (words.isEmpty) {
       return false;
@@ -130,7 +130,7 @@ class AzureSpeechService {
         ? assessment['AccuracyScore'] as num?
         : null;
 
-    print('  음소: $phone (점수: ${score ?? "N/A"})');
+    print('음소: $phone (점수: ${score ?? "N/A"})');
 
     if (phone == 'θ' || phone == 'ð') {
       print('"th" 발음 감지!');
