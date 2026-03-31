@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:th_pronounce_app/service/azure_speech_service.dart';
 
 class ErrorDialog extends StatelessWidget {
   final Exception error;
@@ -80,6 +81,16 @@ class ErrorDialog extends StatelessWidget {
   // 에러 종류별 정보 반환
   ErrorInfo getErrorInfo(Exception error) {
     final errorString = error.toString().toLowerCase();
+
+    // 관련 없는 발음
+    if (error is IrrelevantSpeechException) {
+      return ErrorInfo(
+        title: "앗!",
+        message: "주어진 단어나 문장을\n말해주세요.",
+        icon: Icons.record_voice_over_rounded,
+        color: Color(0xFFFF6B6B),
+      );
+    }
 
     if (errorString.contains('socketexception') ||
         errorString.contains('failed host lookup') ||

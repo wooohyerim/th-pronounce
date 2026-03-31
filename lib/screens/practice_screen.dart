@@ -180,14 +180,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
       await progressService.saveWordProgress(widget.level, currentIndex + 1);
 
       goToResult(result);
-    } on IrrelevantSpeechException {
+    } on IrrelevantSpeechException catch (e) {
       setState(() => isAnalyzing = false);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('주어진 단어나 문장을 말해주세요!'),
-          duration: Duration(seconds: 2),
-        ),
+      showDialog(
+        context: context,
+        builder: (context) => ErrorDialog(error: e),
       );
     } catch (e) {
       setState(() {
