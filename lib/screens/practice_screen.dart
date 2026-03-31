@@ -152,6 +152,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
       await analyzeAndShowResult(audioPath);
     } catch (e) {
+      if (e is IrrelevantSpeechException) rethrow;
+
       setState(() {
         isRecording = false;
         isAnalyzing = false;
@@ -178,6 +180,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
       await progressService.saveWordProgress(widget.level, currentIndex + 1);
 
       goToResult(result);
+    } on IrrelevantSpeechException {
+      setState(() => isAnalyzing = false);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('주어진 단어나 문장을 말해주세요!'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     } catch (e) {
       setState(() {
         isAnalyzing = false;

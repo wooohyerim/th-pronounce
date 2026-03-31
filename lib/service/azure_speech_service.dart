@@ -5,6 +5,8 @@ import 'dart:io';
 
 import 'config_service.dart';
 
+class IrrelevantSpeechException implements Exception {}
+
 class AzureSpeechService {
   String get apiKey => ConfigService.azureSpeechKey;
   String get region => ConfigService.azureSpeechRegion;
@@ -62,6 +64,11 @@ class AzureSpeechService {
         print('응답: ${json.encode(jsonResponse)}');
 
         final result = ResultModel.fromJson(jsonResponse);
+
+        // 관련 없는 발음 체크
+        if (result.completeness < 30) {
+          throw IrrelevantSpeechException();
+        }
 
         final nBest = jsonResponse['NBest'];
         if (nBest == null || nBest is! List || nBest.isEmpty) {
