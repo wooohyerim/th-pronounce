@@ -13,7 +13,8 @@ class RecordingService {
     final status = await Permission.microphone.request();
 
     if (status.isPermanentlyDenied) {
-      return openAppSettings();
+      // return openAppSettings(); 자동으로 설정탭으로 가는
+      return false;
     }
 
     return status.isGranted;
@@ -22,9 +23,9 @@ class RecordingService {
   // 녹음 시작
   void startRecording() async {
     try {
-      if (!await requestPermission()) {
-        throw Exception('마이크 권한이 필요합니다');
-      }
+      // if (!await requestPermission()) {
+      //   throw Exception('마이크 권한이 필요합니다');
+      // }
 
       final directory = await getApplicationDocumentsDirectory();
       _recordingPath =

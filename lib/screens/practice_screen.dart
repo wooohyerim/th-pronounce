@@ -109,6 +109,26 @@ class _PracticeScreenState extends State<PracticeScreen> {
       isRecording = true;
     });
 
+    final granted = await recordingService.requestPermission();
+
+    if (!granted) {
+      setState(() => isRecording = false);
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('마이크 권한 필요'),
+          content: Text('발음 연습을 위해 마이크 권한이 필요합니다.\n설정 > th_피치에서 마이크를 허용해주세요.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('확인'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     try {
       recordingService.startRecording();
     } catch (e) {
