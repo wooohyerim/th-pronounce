@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:th_pronounce_app/data/all_data.dart';
 import 'package:th_pronounce_app/screens/practice_screen.dart';
 import 'package:th_pronounce_app/service/progress_service.dart';
+import 'package:th_pronounce_app/widget/consent_dialog.dart';
 import 'package:th_pronounce_app/widget/level_card.dart';
 import 'package:th_pronounce_app/widget/stats_preview.dart';
 
@@ -22,6 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     loadAllProgress();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ConsentDialog.showIfNeeded(context);
+    });
   }
 
   // 모든 레벨 진행도 불러오기
