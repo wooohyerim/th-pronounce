@@ -291,66 +291,65 @@ class _PracticeScreenState extends State<PracticeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
-        child: Column(
-          children: [
-            SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "${currentIndex + 1} / ${wordList.length}",
-                  textAlign: TextAlign.right,
-                  style: TextStyle(color: Color(0xFF666666), fontSize: 14),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "${currentIndex + 1} / ${wordList.length}",
+                    textAlign: TextAlign.right,
+                    style: TextStyle(color: Color(0xFF666666), fontSize: 14),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 12),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  style: BorderStyle.solid,
-                  color: Color(0xFFE8EAF6),
+              SizedBox(height: 12),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    style: BorderStyle.solid,
+                    color: Color(0xFFE8EAF6),
+                  ),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return LinearPercentIndicator(
-                    width: constraints.maxWidth,
-                    lineHeight: 6,
-                    percent: progressValue,
-                    backgroundColor: Color(0xFFF0F0F0),
-                    progressColor: Color(0xFF667EEA),
-                    barRadius: Radius.circular(8),
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: 50),
-            WordCard(text: currentWord.text, level: widget.level),
-            SizedBox(height: 45),
-            Column(
-              children: [
-                Button(
-                  text: "발음 듣기",
-                  bgColor: Colors.white,
-                  borderColor: Color(0xFFE8EAF6),
-                  textColor: Color(0xFF667EEA),
-                  onTap: playPronunciation,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return LinearPercentIndicator(
+                      width: constraints.maxWidth,
+                      lineHeight: 6,
+                      percent: progressValue,
+                      backgroundColor: Color(0xFFF0F0F0),
+                      progressColor: Color(0xFF667EEA),
+                      barRadius: Radius.circular(8),
+                    );
+                  },
                 ),
-                SizedBox(height: 16),
+              ),
+              SizedBox(height: 50),
+              WordCard(text: currentWord.text, level: widget.level),
+              SizedBox(height: 45),
+              Button(
+                text: "발음 듣기",
+                bgColor: Colors.white,
+                borderColor: Color(0xFFE8EAF6),
+                textColor: Color(0xFF667EEA),
+                onTap: playPronunciation,
+              ),
+              SizedBox(height: 16),
 
-                RecordingButton(
-                  isRecording: isRecording,
-                  isAnalyzing: isAnalyzing,
-                  onStart: startRecording,
-                  onStop: stopRecordingAndAnalyze,
-                ),
-              ],
-            ),
-          ],
+              RecordingButton(
+                isRecording: isRecording,
+                isAnalyzing: isAnalyzing,
+                onStart: startRecording,
+                onStop: stopRecordingAndAnalyze,
+              ),
+              SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
     );

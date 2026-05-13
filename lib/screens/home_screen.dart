@@ -83,53 +83,49 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 20),
-                Text(
-                  "PRACTICE LEVELS",
-                  style: TextStyle(
-                    color: Color(0xFF999999),
-                    fontWeight: FontWeight.bold,
-                  ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20),
+              Text(
+                "PRACTICE LEVELS",
+                style: TextStyle(
+                  color: Color(0xFF999999),
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(height: 18),
-                LevelCard(
-                  title: "단어",
-                  description: "기초 발음을 위한 단어 연습",
-                  level: 1,
-                  count: wordLength,
-                  progress: wordProgress[1] ?? 0,
-                  onTap: () => navigateToPractice(1),
-                ),
-                SizedBox(height: 24),
-                LevelCard(
-                  title: "짧은 문장",
-                  description: "일상 표현으로 발음 다듬기",
-                  level: 2,
-                  count: shortLength,
-                  progress: wordProgress[2] ?? 0,
-                  onTap: () => navigateToPractice(2),
-                ),
-                SizedBox(height: 24),
-                LevelCard(
-                  title: "긴 문장",
-                  description: "복잡한 문장으로 실력 완성",
-                  level: 3,
-                  count: longLength,
-                  progress: wordProgress[3] ?? 0,
-                  onTap: () => navigateToPractice(3),
-                ),
-                SizedBox(height: 40),
-                StatsPreview(key: statsKey),
-                // SizedBox(height: 20),
-              ],
-            ),
-          ],
+              ),
+              SizedBox(height: 18),
+              LevelCard(
+                title: "단어",
+                description: "기초 발음을 위한 단어 연습",
+                level: 1,
+                count: wordLength,
+                progress: wordProgress[1] ?? 0,
+                onTap: () => navigateToPractice(1),
+              ),
+              SizedBox(height: 24),
+              LevelCard(
+                title: "짧은 문장",
+                description: "일상 표현으로 발음 다듬기",
+                level: 2,
+                count: shortLength,
+                progress: wordProgress[2] ?? 0,
+                onTap: () => navigateToPractice(2),
+              ),
+              SizedBox(height: 24),
+              LevelCard(
+                title: "긴 문장",
+                description: "복잡한 문장으로 실력 완성",
+                level: 3,
+                count: longLength,
+                progress: wordProgress[3] ?? 0,
+                onTap: () => navigateToPractice(3),
+              ),
+              SizedBox(height: 40),
+              StatsPreview(key: statsKey),
+            ],
+          ),
         ),
       ),
     );
