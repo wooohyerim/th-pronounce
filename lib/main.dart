@@ -24,6 +24,8 @@ void main() async {
     print("오프 모드 실행");
   }
 
+  print('runApp 시작');
+
   runApp(const MyApp());
 }
 

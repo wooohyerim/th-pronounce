@@ -22,10 +22,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    print('HomeScreen initState 시작');
+
     loadAllProgress();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ConsentDialog.showIfNeeded(context);
     });
+
+    print('🏠 HomeScreen initState 종료');
   }
 
   // 모든 레벨 진행도 불러오기
@@ -61,9 +67,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('🔨 build 시작');
+
     final wordLength = AllWordData.getDataByLevel(1).length;
+    print('📊 wordLength: $wordLength');
+
     final shortLength = AllWordData.getDataByLevel(2).length;
+    print('📊 shortLength: $shortLength');
+
     final longLength = AllWordData.getDataByLevel(3).length;
+    print('📊 longLength: $longLength');
+
+    print('🔨 build 완료 직전');
 
     return Scaffold(
       backgroundColor: Colors.white,
