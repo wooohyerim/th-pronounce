@@ -33,6 +33,7 @@ class AzureSpeechService {
         "granularity": "Phoneme",
         "dimension": "Comprehensive",
         "enableMiscue": false,
+        "phonemeAlphabet": "IPA",
       };
 
       final pronunciationParamJson = json.encode(pronunciationConfig);
